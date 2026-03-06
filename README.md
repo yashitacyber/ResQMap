@@ -57,7 +57,7 @@ The project is currently in the MVP stage, where core map functionality and serv
 
 ## Deployment link of Vercel
 
-https://disaster-resque.vercel.app/
+under work....
 
 ---
 
