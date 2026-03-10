@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
+import "./ResQMap.css";
 import "leaflet/dist/leaflet.css";
 
 // custom icons for different resources
@@ -25,8 +26,16 @@ const defaultIcon = new L.Icon({
 });
 
 const ResQMap = ({ activeFilter, userLocation }) => {
+
   const [markers, setMarkers] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  // analytics state
+  const [metrics, setMetrics] = useState({
+    totalIncidents: 0,
+    totalResources: 0,
+    totalSearches: 0
+  });
 
   // choose icon depending on resource type
   const getIcon = (type) => {
@@ -40,6 +49,7 @@ const ResQMap = ({ activeFilter, userLocation }) => {
   useEffect(() => {
     const fetchResources = async () => {
       try {
+
         setLoading(true);
 
         let url = "/api/resources";
@@ -51,6 +61,7 @@ const ResQMap = ({ activeFilter, userLocation }) => {
         const data = await res.json();
 
         setMarkers(data);
+
       } catch (err) {
         console.error("Error fetching resources:", err);
       } finally {
@@ -61,11 +72,51 @@ const ResQMap = ({ activeFilter, userLocation }) => {
     fetchResources();
   }, [activeFilter]);
 
+  // load analytics metrics
+  useEffect(() => {
+
+    async function loadMetrics() {
+      try {
+        const res = await fetch("/api/analytics/metrics");
+        const data = await res.json();
+        setMetrics(data);
+      } catch (err) {
+        console.log("Failed to load analytics", err);
+      }
+    }
+
+    loadMetrics();
+
+  }, []);
+
   const mapHeight =
-    window.innerWidth < 768 ? "60vh" : "100vh"; // better mobile view
+    window.innerWidth < 768 ? "60vh" : "100vh";
 
   return (
     <div style={{ position: "relative" }}>
+
+      {/* Analytics Panel */}
+      <div
+        style={{
+          position: "absolute",
+          top: "60px",
+          right: "10px",
+          background: "#fff",
+          padding: "10px",
+          borderRadius: "6px",
+          zIndex: 1000,
+          boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+          fontSize: "14px"
+        }}
+      >
+        <strong>System Metrics</strong>
+
+        <div>Incidents: {metrics.totalIncidents}</div>
+        <div>Resources: {metrics.totalResources}</div>
+        <div>Searches: {metrics.totalSearches}</div>
+      </div>
+
+      {/* Loading indicator */}
       {loading && (
         <div
           style={{
@@ -109,6 +160,7 @@ const ResQMap = ({ activeFilter, userLocation }) => {
           </Marker>
         ))}
       </MapContainer>
+
     </div>
   );
 };
