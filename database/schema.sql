@@ -1,9 +1,7 @@
--- schema.sql
-
--- Enable PostGIS extension
+-- Enable PostGIS extension (required for geospatial queries)
 CREATE EXTENSION IF NOT EXISTS postgis;
 
--- Users table (optional login system ke liye)
+-- Users table (optional authentication system)
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
@@ -12,7 +10,7 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Emergency Services table
+-- Emergency Services table (hospitals, police stations, fire stations)
 CREATE TABLE emergency_services (
     id SERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -23,7 +21,9 @@ CREATE TABLE emergency_services (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Accessibility Points table
+
+
+-- Accessibility Points (ramps, stairs, barriers)
 CREATE TABLE accessibility_points (
     id SERIAL PRIMARY KEY,
     description TEXT,
@@ -32,7 +32,7 @@ CREATE TABLE accessibility_points (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Local Resources table
+-- Local Resources table (pharmacies, shelters, vendors)
 CREATE TABLE resources (
     id SERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE resources (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Disaster Incidents table
+-- Disaster Incidents table (floods, fires, accidents)
 CREATE TABLE incidents (
     id SERIAL PRIMARY KEY,
     title VARCHAR(200),
@@ -50,6 +50,23 @@ CREATE TABLE incidents (
     severity VARCHAR(50),
     location GEOGRAPHY(Point, 4326),
     reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--User activity tracking (for analytics)
+CREATE TABLE user_activity (
+    id SERIAL PRIMARY KEY,
+    action VARCHAR(100),
+    resource_type VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--Map Usage tracking (stores searched coordinates)
+CREATE TABLE map_usage (
+    id SERIAL PRIMARY KEY,
+    latitude FLOAT,
+    longitude FLOAT,
+    searched_resource VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Index for faster geospatial queries
