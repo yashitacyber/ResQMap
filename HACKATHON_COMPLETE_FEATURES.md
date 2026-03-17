@@ -24,7 +24,7 @@ Dark mode and multi-language support
 
 PWA support for offline usage
 
-🚀 New Features (Main Highlights)
+ New Features (Main Highlights)
 1. Smart Response Advisor
 
 This feature gives users guidance based on the situation.
