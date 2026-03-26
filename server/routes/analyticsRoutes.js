@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get("/analytics/metrics", authMiddleware, async (req, res) => {
 // return dashboard statistics
-// router.get("/analytics/metrics", async (req, res) => {
+// router.get("/analytics/metrics", async (req, res) => { 
   try {
     const [incidents] = await db.query(
       "SELECT COUNT(*) AS total FROM incidents"
